@@ -1,0 +1,81 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ lower .Chart.Name }}-deployment
+  namespace: {{ lower .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ lower .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ lower .Chart.Name }}
+    spec:
+      {{- if .Values.horde.serviceAccount }}
+      serviceAccountName: {{ .Values.horde.serviceAccount }}
+      {{- else }}
+      serviceAccountName: {{ lower .Chart.Name }}-service-account
+      {{- end }}
+      volumes:
+        - name: shared-data
+          emptyDir: { }
+      containers:
+        - name: {{ .Values.horde.container.name }}
+          image: {{ .Values.horde.image.name }}:{{ .Values.horde.image.tag }}
+          imagePullPolicy: {{ .Values.horde.image.pullPolicy }}
+          resources:
+          {{- if .Values.horde.container.resources }}
+            {{- with .Values.horde.container.resources }}
+              {{ toYaml . | nindent 12 }}
+            {{- end }}
+          {{- else }}
+            limits:
+              cpu: 1
+              memory: 4Gi
+            requests:
+              cpu: 1
+              memory: 4Gi
+          {{- end }}
+          ports:
+            - name: {{ lower .Chart.Name }}-api-port
+              containerPort: {{ .Values.horde.service.ports.api }}
+            - name: {{ lower .Chart.Name }}-grpc-port
+              containerPort: {{ .Values.horde.service.ports.grpc }}
+          volumeMounts:
+            - name: shared-data
+              mountPath: /app/config
+          envFrom:
+            - configMapRef:
+                name: {{ lower .Chart.Name }}ConfigMap
+            - secretRef:
+                name: {{ .Chart.Name }}P4Secret
+            - secretRef:
+                name: {{ .Chart.Name }}MongoDBSecret
+          env:
+            - name: Horde__redisConnectionConfig
+              value: {{ .Values.redis.host }}:{{ .Values.redis.port }}
+      initContainers:
+        - name: unreal-horde-p4-trust
+          image: ubuntu:noble
+          command: ["/bin/sh", "-c"]
+          args:
+            - |  
+              apt-get update
+              apt-get install -y curl gnupg
+              curl -fs https://package.perforce.com/perforce.pubkey | gpg --dearmor -o /usr/share/keyrings/perforce.gpg
+              echo "deb [signed-by=/usr/share/keyrings/perforce.gpg] https://package.perforce.com/apt/ubuntu noble release" > /etc/apt/sources.list.d/perforce.list
+              apt-get update
+              apt-get install -y p4-cli
+              p4 -p {{ .Values.perforce.server }} trust -y
+          volumeMounts:
+            - name: shared-data
+              mountPath: /app/config
+        {{- if .Values.mongodb.install_documentdb_cert }}
+        - name: unreal-horde-docdb-cert
+          image: public.ecr.aws/docker/library/bash:5.3
+          command: ["wget", "https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem", "-P", "/app/config/"]
+          volumeMounts:
+            - name: shared-data
+              mountPath: /app/config
+        {{- end }}

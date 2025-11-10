@@ -1,0 +1,10 @@
+﻿### Helm template
+
+# Chart dependencies
+**/charts/*.tgz
+
+# local testing
+testing/*
+
+# Jetbrains
+.idea/*

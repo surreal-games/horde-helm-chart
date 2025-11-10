@@ -1,0 +1,20 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ .Chart.Name }}ConfigMap
+  namespace: {{ .Chart.Name }}
+data:
+  # possible values: ["Anonymous", "Okta", "OpenIdConnect", "Horde"]
+  Horde__authMethod: "{{ .Values.horde.auth.authMethod }}"
+  Horde__oidcAuthority: "{{ .Values.horde.auth.oidcAuthority }}"
+  Horde__oidcAudience: "{{ .Values.horde.auth.oidcAudience }}"
+  Horde__oidcClientId: "{{ .Values.horde.auth.oidcClientId }}"
+  Horde__oidcClientSecret: "{{ .Values.horde.auth.oidcClientSecret }}"
+  Horde__oidcSigninRedirect: "{{ .Values.horde.auth.oidcSigninRedirect }}"
+  Horde__adminClaimType: "{{ .Values.horde.auth.adminClaimType }}"
+  Horde__adminClaimValue: "{{ .Values.horde.auth.adminClaimValue }}"
+  Horde__enableNewAgentsByDefault: "true"
+  Horde__Perforce__0__ServerAndPort: "{{ .Values.perforce.server }}"
+  Horde__jwtIssuer: "{{ .Values.horde.fully_qualified_domain_name }}"
+  P4TRUST: "/app/config/.p4trust"
+  ASPNETCORE_ENVIRONMENT: "{{ .Values.horde.environment }}"

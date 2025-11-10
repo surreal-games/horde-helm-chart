@@ -1,0 +1,86 @@
+horde:
+  # environment 
+  # [Production, Development, and Local]
+  environment: Development
+  fully_qualified_domain_name: "" 
+    
+  # image info
+  image: 
+    name: "ghcr.io/epicgames/horde-server"
+    tag: "latest-bundled"
+    pullPolicy: IfNotPresent
+  
+  # replica count
+  replicaCount: 1
+  
+  # service
+  service:
+    type: LoadBalancer
+    ports:
+      api: 5000
+      grpc: 5002
+  
+  # horde container
+  container:
+    name: "unreal-horde-container"
+    resources: { }
+      #  limits:
+      #    cpu: 1
+      #    memory: 4Gi
+      #  requests:
+      #    cpu: 1
+      #    memory: 4Gi
+  
+  # ingress settings  
+  ingress:
+    http:
+      enabled: false
+      className: ""
+      annotations: { }
+      labels: { }  
+    grpc:
+      enabled: false
+      className: ""
+      annotations: { }
+      labels: { }
+  
+  # Service account, if empty the service account will be created
+  serviceAccount: ""
+  
+  # auth settings
+  auth:
+    authMethod: ""
+    oidcAuthority: ""
+    oidcAudience: ""
+    oidcClientId: ""
+    oidcClientSecret: ""
+    oidcSigninRedirect: ""
+    adminClaimType: ""
+    adminClaimValue: ""
+  
+# Perforce settings  
+perforce:
+  server: "localhost:1666"
+  # TODO: support getting this from existing secret
+  username: ""
+  password: ""
+  
+# redis (or elasticache) settings
+redis:
+  # TODO: support spinning up redis in a subchart
+  external: true
+  host: ""
+  port: 6379
+
+# mongodb (or documentdb) settings
+mongodb:
+  # TODO: support spinning up mongodb in a subchart
+  external: true
+  install_documentdb_cert: true
+  # TODO: support getting this from existing secret
+  host: ""
+  port: 0
+  # leave off the question mark
+  connectionArgs: ""
+  username: ""
+  password: ""

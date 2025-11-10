@@ -1,0 +1,25 @@
+﻿{{- if .Values.horde.ingress.http.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ lower .Chart.Name }}-http-ingress
+  namespace: {{ lower .Chart.Name }}
+  {{- if .Values.horde.ingress.http.annotations }}
+  annotations:
+    {{- with .Values.horde.ingress.http.annotations }}
+      {{ toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.horde.ingress.http.className }}
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ lower .Chart.Name }}-service
+                port:
+                  number: {{ .Values.horde.service.ports.api }}
+{{- end }}
