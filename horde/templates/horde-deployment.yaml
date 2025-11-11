@@ -4,6 +4,7 @@ metadata:
   name: {{ lower .Chart.Name }}-deployment
   namespace: {{ lower .Chart.Name }}
 spec:
+  replicas: {{ .Values.horde.replicaCount }}
   selector:
     matchLabels:
       app: {{ lower .Chart.Name }}
