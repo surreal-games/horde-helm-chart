@@ -1,7 +1,7 @@
 ﻿apiVersion: v1
 kind: ConfigMap
 metadata: 
-  name: {{ .Chart.Name }}ConfigMap
+  name: {{ .Chart.Name }}-configmap
   namespace: {{ .Chart.Name }}
 data:
   # possible values: ["Anonymous", "Okta", "OpenIdConnect", "Horde"]

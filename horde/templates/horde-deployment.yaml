@@ -4,6 +4,7 @@ metadata:
   name: {{ lower .Chart.Name }}-deployment
   namespace: {{ lower .Chart.Name }}
 spec:
+  replicas: {{ .Values.horde.replicaCount }}
   selector:
     matchLabels:
       app: {{ lower .Chart.Name }}
@@ -47,14 +48,18 @@ spec:
               mountPath: /app/config
           envFrom:
             - configMapRef:
-                name: {{ lower .Chart.Name }}ConfigMap
+                name: {{ lower .Chart.Name }}-configmap
             - secretRef:
-                name: {{ .Chart.Name }}P4Secret
+                name: {{ lower .Chart.Name }}-p4-secret
             - secretRef:
-                name: {{ .Chart.Name }}MongoDBSecret
+                name: {{ lower .Chart.Name }}-mongodb-secret
           env:
             - name: Horde__redisConnectionConfig
               value: {{ .Values.redis.host }}:{{ .Values.redis.port }}
+            {{- if .Values.mongodb.install_documentdb_cert }}
+            - name: Horde__databasePublicCert
+              value: "/app/config/global-bundle.pem"
+            {{- end }}
       initContainers:
         - name: unreal-horde-p4-trust
           image: ubuntu:noble
@@ -62,11 +67,13 @@ spec:
           args:
             - |  
               apt-get update
-              apt-get install -y curl gnupg
+              apt-get install -y curl gnupg dnsutils
               curl -fs https://package.perforce.com/perforce.pubkey | gpg --dearmor -o /usr/share/keyrings/perforce.gpg
               echo "deb [signed-by=/usr/share/keyrings/perforce.gpg] https://package.perforce.com/apt/ubuntu noble release" > /etc/apt/sources.list.d/perforce.list
               apt-get update
               apt-get install -y p4-cli
+              echo "running p4..."
+              nslookup core.helix.perforce.internal
               p4 -p {{ .Values.perforce.server }} trust -y
           volumeMounts:
             - name: shared-data
