@@ -17,5 +17,4 @@ data:
   Horde__Perforce__0__ServerAndPort: "{{ .Values.perforce.server }}"
   Horde__jwtIssuer: "{{ .Values.horde.fully_qualified_domain_name }}"
   Horde__configPath: "{{ .Values.horde.configPath }}"
-  P4TRUST: "/app/config/.p4trust"
   ASPNETCORE_ENVIRONMENT: "{{ .Values.horde.environment }}"

@@ -49,6 +49,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ lower .Chart.Name }}-configmap
+            - configMapRef:
+                name: {{ lower .Chart.Name }}-p4-configmap
             - secretRef:
                 name: {{ lower .Chart.Name }}-p4-secret
             - secretRef:
@@ -73,6 +75,11 @@ spec:
               apt-get update
               apt-get install -y p4-cli
               p4 -p {{ .Values.perforce.server }} trust -y
+          envFrom:
+            - configMapRef:
+                name: {{ lower .Chart.Name }}-p4-configmap
+            - secretRef:
+                name: {{ lower .Chart.Name }}-p4-secret
           volumeMounts:
             - name: shared-data
               mountPath: /app/config

@@ -1,0 +1,9 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-p4-configmap
+  namespace: {{ .Chart.Name }}
+data:
+  P4TRUST: "/app/config/.p4trust"
+  P4CHARSET: "utf8"
+  P4PORT: "{{ .Values.perforce.server }}"
