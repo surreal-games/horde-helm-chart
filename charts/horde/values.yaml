@@ -57,6 +57,9 @@ horde:
     oidcSigninRedirect: ""
     adminClaimType: ""
     adminClaimValue: ""
+    
+  # Horde configuration json file location
+  configPath: ""
   
 # Perforce settings  
 perforce:
