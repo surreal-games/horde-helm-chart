@@ -33,16 +33,11 @@ horde:
   
   # ingress settings  
   ingress:
-    http:
-      enabled: false
-      className: ""
-      annotations: { }
-      labels: { }  
-    grpc:
-      enabled: false
-      className: ""
-      annotations: { }
-      labels: { }
+    enabled: false
+    className: ""
+    annotations: { }
+    labels: { }  
+    rules: [ ]
   
   # Service account, if empty the service account will be created
   serviceAccount: ""
