@@ -8,6 +8,9 @@ spec:
   selector:
     app: {{ lower .Chart.Name }}
   ports:
-    - name: {{ lower .Chart.Name }}-api-port
+    - name: {{ lower .Chart.Name }}-api
       port: {{ .Values.horde.service.ports.api }}
-      targetPort: {{ .Values.horde.service.ports.api }}
+      targetPort: {{ lower .Chart.Name }}-api-port
+    - name: {{ lower .Chart.Name }}-grpc
+      port: {{ .Values.horde.service.ports.grpc }}
+      targetPort: {{ lower .Chart.Name }}-grpc-port
