@@ -40,9 +40,9 @@ spec:
           {{- end }}
           ports:
             - name: {{ lower .Chart.Name }}-http-port
-              containerPort: {{ .Values.horde.service.ports.http }}
+              containerPort: {{ .Values.horde.service.http.port }}
             - name: {{ lower .Chart.Name }}-grpc-port
-              containerPort: {{ .Values.horde.service.ports.grpc }}
+              containerPort: {{ .Values.horde.service.grpc.port }}
           volumeMounts:
             - name: shared-data
               mountPath: /app/config
