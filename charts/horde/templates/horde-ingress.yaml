@@ -7,13 +7,13 @@ metadata:
   {{- if .Values.horde.ingress.annotations }}
   annotations:
     {{- with .Values.horde.ingress.annotations }}
-      {{ toYaml . | nindent 6 }}
+      {{ toYaml . | indent 6 }}
     {{- end }}
   {{- end }}
 spec:
   ingressClassName: {{ .Values.horde.ingress.className }}
   rules:
   {{- with .Values.horde.ingress.rules }}
-    {{ toYaml . | nindent 4 }}
+    {{ toYaml . | indent 4 }}
   {{- end }}
 {{- end }}
