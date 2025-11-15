@@ -10,6 +10,12 @@ metadata:
       {{ toYaml . | nindent 6 }}
     {{- end }}
   {{- end }}
+  {{- if .Values.horde.ingress.labels }}
+    labels:
+      {{- with .Values.horde.ingress.labels }}
+        {{ toYaml . | nindent 6 }}
+      {{- end }}
+    {{- end }}
 spec:
   ingressClassName: {{ .Values.horde.ingress.className }}
   rules:

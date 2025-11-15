@@ -13,13 +13,6 @@ horde:
   # replica count
   replicaCount: 1
   
-  # service
-  service:
-    type: LoadBalancer
-    ports:
-      http: 5000
-      grpc: 5002
-  
   # horde container
   container:
     name: "unreal-horde-container"
@@ -30,6 +23,19 @@ horde:
       #  requests:
       #    cpu: 1
       #    memory: 4Gi
+  
+  # service settings
+  service:
+    http:
+      type: LoadBalancer
+      port: 5000
+      annotations: { }
+      labels: { }
+    grpc:
+      type: LoadBalancer
+      port: 5002
+      annotations: { }
+      labels: { }
   
   # ingress settings  
   ingress:

@@ -1,0 +1,26 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: {{ lower .Chart.Name }}-grpc-service
+  namespace: {{ lower .Chart.Name }}
+  {{- if .Values.horde.service.grpc.annotations }}
+  annotations:
+    {{- with .Values.horde.service.grpc.annotations }}
+      {{ toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.horde.service.grpc.labels }}
+  labels:
+    {{- with .Values.horde.service.grpc.labels }}
+      {{ toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.horde.service.grpc.type }}
+  selector:
+    app: {{ lower .Chart.Name }}-app
+  ports:
+    - name: {{ lower .Chart.Name }}-grpc
+      protocol: TCP
+      port: {{ .Values.horde.service.grpc.port }}
+      targetPort: {{ lower .Chart.Name }}-grpc-port
