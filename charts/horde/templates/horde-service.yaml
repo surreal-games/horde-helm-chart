@@ -1,16 +1,18 @@
 ﻿apiVersion: v1
 kind: Service
 metadata:
-  name: {{ lower .Chart.Name }}-http-service
+  name: {{ lower .Chart.Name }}-service
   namespace: {{ lower .Chart.Name }}
 spec:
   type: LoadBalancer
   selector:
-    app: {{ lower .Chart.Name }}
+    app: {{ lower .Chart.Name }}-app
   ports:
-    - name: {{ lower .Chart.Name }}-api
-      port: {{ .Values.horde.service.ports.api }}
-      targetPort: {{ lower .Chart.Name }}-api-port
+    - name: {{ lower .Chart.Name }}-http
+      protocol: TCP
+      port: {{ .Values.horde.service.ports.http }}
+      targetPort: {{ lower .Chart.Name }}-http-port
     - name: {{ lower .Chart.Name }}-grpc
+      protocol: TCP
       port: {{ .Values.horde.service.ports.grpc }}
       targetPort: {{ lower .Chart.Name }}-grpc-port

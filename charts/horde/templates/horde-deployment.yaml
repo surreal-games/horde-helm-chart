@@ -2,16 +2,16 @@
 kind: Deployment
 metadata:
   name: {{ lower .Chart.Name }}-deployment
-  namespace: {{ lower .Chart.Name }}
+  namespace: {{ lower .Chart.Name }}-app
 spec:
   replicas: {{ .Values.horde.replicaCount }}
   selector:
     matchLabels:
-      app: {{ lower .Chart.Name }}
+      app: {{ lower .Chart.Name }}-app
   template:
     metadata:
       labels:
-        app: {{ lower .Chart.Name }}
+        app: {{ lower .Chart.Name }}-app
     spec:
       {{- if .Values.horde.serviceAccount }}
       serviceAccountName: {{ .Values.horde.serviceAccount }}
@@ -39,8 +39,8 @@ spec:
               memory: 4Gi
           {{- end }}
           ports:
-            - name: {{ lower .Chart.Name }}-api-port
-              containerPort: {{ .Values.horde.service.ports.api }}
+            - name: {{ lower .Chart.Name }}-http-port
+              containerPort: {{ .Values.horde.service.ports.http }}
             - name: {{ lower .Chart.Name }}-grpc-port
               containerPort: {{ .Values.horde.service.ports.grpc }}
           volumeMounts:

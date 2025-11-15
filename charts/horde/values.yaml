@@ -17,7 +17,7 @@ horde:
   service:
     type: LoadBalancer
     ports:
-      api: 5000
+      http: 5000
       grpc: 5002
   
   # horde container
