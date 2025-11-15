@@ -1,8 +1,8 @@
 ﻿apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ lower .Chart.Name }}-deployment
-  namespace: {{ lower .Chart.Name }}-app
+  name: {{ lower .Chart.Name }}-app
+  namespace: {{ lower .Chart.Name }}
 spec:
   replicas: {{ .Values.horde.replicaCount }}
   selector:
