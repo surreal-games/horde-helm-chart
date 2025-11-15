@@ -1,26 +1,27 @@
 ﻿apiVersion: v1
 kind: Service
+{{- $service := .Values.horde.service.grpc | default dict }}
 metadata:
   name: {{ lower .Chart.Name }}-grpc-service
   namespace: {{ lower .Chart.Name }}
-  {{- if .Values.horde.service.grpc.annotations }}
+  {{- if $service.annotations }}
   annotations:
-    {{- with .Values.horde.service.grpc.annotations }}
-      {{ toYaml . | nindent 6 }}
+    {{- with $service.annotations }}
+      {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
-  {{- if .Values.horde.service.grpc.labels }}
+  {{- if $service.labels }}
   labels:
-    {{- with .Values.horde.service.grpc.labels }}
-      {{ toYaml . | nindent 6 }}
+    {{- with $service.labels }}
+      {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
 spec:
-  type: {{ .Values.horde.service.grpc.type }}
+  type: {{ $service.type | default "LoadBalancer" }}
   selector:
     app: {{ lower .Chart.Name }}-app
   ports:
     - name: {{ lower .Chart.Name }}-grpc
       protocol: TCP
-      port: {{ .Values.horde.service.grpc.port }}
+      port: {{ $service.port | default 5002 }}
       targetPort: {{ lower .Chart.Name }}-grpc-port
