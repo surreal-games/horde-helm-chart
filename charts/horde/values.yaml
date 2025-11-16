@@ -64,7 +64,8 @@ horde:
   
 # Perforce settings  
 perforce:
-  server: "localhost:1666"
+  server: ""
+  trust_servers: []
   # TODO: support getting this from existing secret
   username: ""
   password: ""

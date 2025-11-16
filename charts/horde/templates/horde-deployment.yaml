@@ -74,7 +74,10 @@ spec:
               echo "deb [signed-by=/usr/share/keyrings/perforce.gpg] https://package.perforce.com/apt/ubuntu noble release" > /etc/apt/sources.list.d/perforce.list
               apt-get update
               apt-get install -y p4-cli
-              p4 -p {{ .Values.perforce.server }} trust -y
+              {{- range .Values.perforce.trust_servers }}
+              echo "Trusting P4 server {{ . }}"
+              p4 -p {{ . }} trust -y
+              {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ lower .Chart.Name }}-p4-configmap
