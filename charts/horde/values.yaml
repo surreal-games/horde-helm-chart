@@ -78,11 +78,6 @@ perforce:
   # TODO: support getting this from existing secret
   username: ""
   password: ""
-  # make sure to also pass any server in here into trust_servers as well
-  clusters:
-    - credentials:
-        - username: ""
-          password: ""
 
 # redis (or elasticache) settings
 redis:

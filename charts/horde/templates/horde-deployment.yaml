@@ -56,10 +56,6 @@ spec:
                 name: {{ lower $name }}-p4-secret
             - secretRef:
                 name: {{ lower $name }}-mongodb-secret
-            {{- range $index, $cluster := .Values.perforce.clusters }}
-            - secretRef:
-                name: {{ $name }}-p4-cluster-secret-{{ $index }}
-            {{- end }}
             {{- range .Values.container.envFromConfigMaps }}
             - configMapRef:
                 name: {{ . }}
