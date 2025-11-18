@@ -52,10 +52,6 @@ spec:
                 name: {{ lower $name }}-configmap
             - configMapRef:
                 name: {{ lower $name }}-p4-configmap
-            {{- range $index, $cluster := .Values.perforce.clusters }}
-            - configMapRef:
-                name: {{ $name }}-p4-cluster-configmap-{{ $index }}
-            {{- end }}
             - secretRef:
                 name: {{ lower $name }}-p4-secret
             - secretRef:

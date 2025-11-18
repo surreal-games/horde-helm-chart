@@ -80,18 +80,10 @@ perforce:
   password: ""
   # make sure to also pass any server in here into trust_servers as well
   clusters:
-    - name: ""
-      servers:
-        - serverAndPort: ""
-          isProxy: false
-          condition: ""
-          maxConformCount: 1 
-      credentials:
+    - credentials:
         - username: ""
           password: ""
-      serviceAccount: ""
-      canImpersonate: false
-  
+
 # redis (or elasticache) settings
 redis:
   # TODO: support spinning up redis in a subchart
