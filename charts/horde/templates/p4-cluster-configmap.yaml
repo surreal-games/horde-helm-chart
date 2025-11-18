@@ -1,7 +1,7 @@
 ﻿{{- $name := .Chart.Name }}
 {{- range $index, $cluster := .Values.perforce.clusters }}
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
   name: {{ $name }}-p4-cluster-configmap-{{ $index }}
   namespace: {{ $name }}
@@ -9,10 +9,10 @@ data:
   Horde__PerforceClusters__{{ $index }}__Name: {{ $cluster.name | b64enc | quote}}
   {{- range $subindex, $server := $cluster.servers}}
   Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__ServerAndPort: {{ $server.serverAndPort | quote}}
-  Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__IsProxy: {{ $server.isProxy }}
+  Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__IsProxy: {{ $server.isProxy | quote }}
   Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__Condition: {{ $server.condition | quote}}
-  Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__MaxConformCount: {{ $server.maxConformCount }}
+  Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__MaxConformCount: {{ $server.maxConformCount | quote }}
   {{- end }}
   Horde__PerforceClusters__{{ $index }}__ServiceAccount: {{ $cluster.serviceAccount | quote}}
-  Horde__PerforceClusters__{{ $index }}__CanImpersonate: {{ $cluster.canImpersonate }}
+  Horde__PerforceClusters__{{ $index }}__CanImpersonate: {{ $cluster.canImpersonate | quote  }}
 {{- end }}
