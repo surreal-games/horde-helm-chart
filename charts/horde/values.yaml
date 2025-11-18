@@ -83,11 +83,14 @@ perforce:
     - name: ""
       servers:
         - serverAndPort: ""
+          isProxy: false
+          condition: ""
+          maxConformCount: 1 
       credentials:
         - username: ""
           password: ""
       serviceAccount: ""
-      canImpersonate: "false"
+      canImpersonate: false
   
 # redis (or elasticache) settings
 redis:
