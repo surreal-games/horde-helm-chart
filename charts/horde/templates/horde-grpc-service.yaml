@@ -1,6 +1,6 @@
 ﻿apiVersion: v1
 kind: Service
-{{- $service := .Values.horde.service.grpc | default dict }}
+{{- $service := .Values.service.grpc | default dict }}
 metadata:
   name: {{ lower .Chart.Name }}-grpc-service
   namespace: {{ lower .Chart.Name }}

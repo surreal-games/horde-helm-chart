@@ -1,66 +1,75 @@
-horde:
-  # environment 
-  # [Production, Development, and Local]
-  environment: Development
-  fully_qualified_domain_name: "" 
-    
-  # image info
-  image: 
-    name: "ghcr.io/epicgames/horde-server"
-    tag: "latest-bundled"
-    pullPolicy: IfNotPresent
+# environment 
+# [Production, Development, and Local]
+environment: Development
+fully_qualified_domain_name: "" 
   
-  # replica count
-  replicaCount: 1
+# image info
+image: 
+  name: "ghcr.io/epicgames/horde-server"
+  tag: "latest-bundled"
+  pullPolicy: IfNotPresent
+
+# replica count
+replicaCount: 1
+
+# horde container
+container:
+  name: "unreal-horde-container"
+  resources: { }
+    #  limits:
+    #    cpu: 1
+    #    memory: 4Gi
+    #  requests:
+    #    cpu: 1
+    #    memory: 4Gi
   
-  # horde container
-  container:
-    name: "unreal-horde-container"
-    resources: { }
-      #  limits:
-      #    cpu: 1
-      #    memory: 4Gi
-      #  requests:
-      #    cpu: 1
-      #    memory: 4Gi
-  
-  # service settings
-  service:
-    http:
-      type: LoadBalancer
-      port: 5000
-      annotations: { }
-      labels: { }
-    grpc:
-      type: LoadBalancer
-      port: 5002
-      annotations: { }
-      labels: { }
-  
-  # ingress settings  
-  ingress:
-    enabled: false
-    className: ""
+  # name: environment variable name
+  # 
+  env: [ ]
+  # - name: environment variable name
+  #   value: environment variable value
+  envFromSecrets: [ ]
+  #  - secretName
+  envFromConfigMaps: [ ]
+  #  - configMapName
+
+# service settings
+service:
+  http:
+    type: LoadBalancer
+    port: 5000
     annotations: { }
-    labels: { }  
-    rules: [ ]
+    labels: { }
+  grpc:
+    type: LoadBalancer
+    port: 5002
+    annotations: { }
+    labels: { }
+
+# ingress settings  
+ingress:
+  enabled: false
+  className: ""
+  annotations: { }
+  labels: { }  
+  rules: [ ]
+
+# Service account, if empty the service account will be created
+serviceAccount: ""
+
+# auth settings
+auth:
+  authMethod: ""
+  oidcAuthority: ""
+  oidcAudience: ""
+  oidcClientId: ""
+  oidcClientSecret: ""
+  oidcSigninRedirect: ""
+  adminClaimType: ""
+  adminClaimValue: ""
   
-  # Service account, if empty the service account will be created
-  serviceAccount: ""
-  
-  # auth settings
-  auth:
-    authMethod: ""
-    oidcAuthority: ""
-    oidcAudience: ""
-    oidcClientId: ""
-    oidcClientSecret: ""
-    oidcSigninRedirect: ""
-    adminClaimType: ""
-    adminClaimValue: ""
-    
-  # Horde configuration json file location
-  configPath: ""
+# Horde configuration json file location
+configPath: ""
   
 # Perforce settings  
 perforce:
@@ -69,6 +78,16 @@ perforce:
   # TODO: support getting this from existing secret
   username: ""
   password: ""
+  # make sure to also pass any server in here into trust_servers as well
+  clusters:
+    - name: ""
+      servers:
+        - serverAndPort: ""
+      credentials:
+        - username: ""
+          password: ""
+      serviceAccount: ""
+      canImpersonate: "false"
   
 # redis (or elasticache) settings
 redis:

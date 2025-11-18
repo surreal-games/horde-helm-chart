@@ -1,6 +1,6 @@
 ﻿apiVersion: v1
 kind: Service
-{{- $service := .Values.horde.service.http | default dict }}
+{{- $service := .Values.service.http | default dict }}
 metadata:
   name: {{ lower .Chart.Name }}-http-service
   namespace: {{ lower .Chart.Name }}

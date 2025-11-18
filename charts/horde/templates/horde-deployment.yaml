@@ -1,33 +1,34 @@
-﻿apiVersion: apps/v1
+﻿{{- $name := .Chart.Name }}
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ lower .Chart.Name }}-app
-  namespace: {{ lower .Chart.Name }}
+  name: {{ lower $name }}-app
+  namespace: {{ lower $name }}
 spec:
-  replicas: {{ .Values.horde.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ lower .Chart.Name }}-app
+      app: {{ lower $name }}-app
   template:
     metadata:
       labels:
-        app: {{ lower .Chart.Name }}-app
+        app: {{ lower $name }}-app
     spec:
-      {{- if .Values.horde.serviceAccount }}
-      serviceAccountName: {{ .Values.horde.serviceAccount }}
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
       {{- else }}
-      serviceAccountName: {{ lower .Chart.Name }}-service-account
+      serviceAccountName: {{ lower $name }}-service-account
       {{- end }}
       volumes:
         - name: shared-data
           emptyDir: { }
       containers:
-        - name: {{ .Values.horde.container.name }}
-          image: {{ .Values.horde.image.name }}:{{ .Values.horde.image.tag }}
-          imagePullPolicy: {{ .Values.horde.image.pullPolicy }}
+        - name: {{ .Values.container.name }}
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
-          {{- if .Values.horde.container.resources }}
-            {{- with .Values.horde.container.resources }}
+          {{- if .Values.container.resources }}
+            {{- with .Values.container.resources }}
               {{ toYaml . | nindent 12 }}
             {{- end }}
           {{- else }}
@@ -39,28 +40,43 @@ spec:
               memory: 4Gi
           {{- end }}
           ports:
-            - name: {{ lower .Chart.Name }}-http-port
-              containerPort: {{ .Values.horde.service.http.port }}
-            - name: {{ lower .Chart.Name }}-grpc-port
-              containerPort: {{ .Values.horde.service.grpc.port }}
+            - name: {{ lower $name }}-http-port
+              containerPort: {{ .Values.service.http.port }}
+            - name: {{ lower $name }}-grpc-port
+              containerPort: {{ .Values.service.grpc.port }}
           volumeMounts:
             - name: shared-data
               mountPath: /app/config
           envFrom:
             - configMapRef:
-                name: {{ lower .Chart.Name }}-configmap
+                name: {{ lower $name }}-configmap
             - configMapRef:
-                name: {{ lower .Chart.Name }}-p4-configmap
+                name: {{ lower $name }}-p4-configmap
             - secretRef:
-                name: {{ lower .Chart.Name }}-p4-secret
+                name: {{ lower $name }}-p4-secret
             - secretRef:
-                name: {{ lower .Chart.Name }}-mongodb-secret
+                name: {{ lower $name }}-mongodb-secret
+            {{- range $index, $cluster := .Values.perforce.clusters }}
+            - secretRef:
+                name: {{ $name }}-p4-cluster-secret-{{ $index }}
+            {{- end }}
+            {{- range .Values.container.envFromConfigMaps }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- range .Values.container.envFromSecrets }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
           env:
             - name: Horde__redisConnectionConfig
               value: {{ .Values.redis.host }}:{{ .Values.redis.port }}
             {{- if .Values.mongodb.install_documentdb_cert }}
             - name: Horde__databasePublicCert
               value: "/app/config/global-bundle.pem"
+            {{- end }}
+            {{- range .Values.container.env }}
+            - {{ .name }}: {{ .value }}
             {{- end }}
       initContainers:
         - name: unreal-horde-p4-trust
@@ -80,9 +96,9 @@ spec:
               {{- end }}
           envFrom:
             - configMapRef:
-                name: {{ lower .Chart.Name }}-p4-configmap
+                name: {{ lower $name }}-p4-configmap
             - secretRef:
-                name: {{ lower .Chart.Name }}-p4-secret
+                name: {{ lower $name }}-p4-secret
           volumeMounts:
             - name: shared-data
               mountPath: /app/config
