@@ -3,6 +3,16 @@ entries:
   horde:
   - apiVersion: v2
     appVersion: 5.6.1
+    created: "2025-11-18T17:06:33.577292983Z"
+    description: A Helm chart for Kubernetes
+    digest: 416576e94a51b6429df6554b28b993504bfb085d0b5c2a287c5ab9cf6c0be486
+    name: horde
+    type: application
+    urls:
+    - https://github.com/surreal-games/horde-helm-chart/releases/download/horde-0.1.18/horde-0.1.18.tgz
+    version: 0.1.18
+  - apiVersion: v2
+    appVersion: 5.6.1
     created: "2025-11-18T16:49:42.136822105Z"
     description: A Helm chart for Kubernetes
     digest: c3fec04f7e10bc50be41a551eb9bab835acb5e2311fb1295649c8fce58a55847
@@ -161,4 +171,4 @@ entries:
     urls:
     - https://github.com/surreal-games/horde-helm-chart/releases/download/horde-0.1.0/horde-0.1.0.tgz
     version: 0.1.0
-generated: "2025-11-18T16:49:42.136965511Z"
+generated: "2025-11-18T17:06:33.577415863Z"
