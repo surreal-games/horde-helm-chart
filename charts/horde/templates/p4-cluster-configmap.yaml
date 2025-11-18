@@ -7,7 +7,7 @@ metadata:
   name: {{ $name }}-p4-cluster-configmap-{{ $index }}
   namespace: {{ $name }}
 data:
-  Horde__PerforceClusters__{{ $index }}__Name: {{ $cluster.name | b64enc | quote}}
+  Horde__PerforceClusters__{{ $index }}__Name: {{ $cluster.name | quote}}
   {{- range $subindex, $server := $cluster.servers}}
   Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__ServerAndPort: {{ $server.serverAndPort | quote}}
   Horde__PerforceClusters__{{ $index }}__Servers__{{ $subindex }}__IsProxy: {{ $server.isProxy | quote }}
