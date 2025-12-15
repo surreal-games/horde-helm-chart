@@ -4,6 +4,8 @@ kind: Deployment
 metadata:
   name: {{ lower $name }}-app
   namespace: {{ lower $name }}
+  labels:
+    app.kubernetes.io/name: {{ lower $name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
