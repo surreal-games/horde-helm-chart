@@ -5,31 +5,49 @@ metadata:
   name: {{ lower $name }}-app
   namespace: {{ lower $name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  {{- if .Values.deployment.strategy }}
+  strategy:
+    {{- with .Values.deployment.strategy }}
+      {{ toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ lower $name }}-app
   template:
     metadata:
+      {{- if .Values.deployment.metadata.annotations }}
+      annotations:
+        {{- with .Values.deployment.metadata.annotations }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
       labels:
         app: {{ lower $name }}-app
         app.kubernetes.io/name: {{ lower $name }}
+        {{- if .Values.deployment.metadata.labels }}
+          {{- with .Values.deployment.metadata.labels }}
+            {{ toYaml . | nindent 8 }}
+          {{- end }}
+        {{- end }}
     spec:
-      {{- if .Values.serviceAccount }}
-      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- if .Values.deployment.container.serviceAccount }}
+      serviceAccountName: {{ .Values.deployment.container.serviceAccount }}
       {{- else }}
       serviceAccountName: {{ lower $name }}-service-account
       {{- end }}
       volumes:
         - name: shared-data
           emptyDir: { }
+      terminationGracePeriodSeconds: {{ .Values.deployment.container.terminationGracePeriodSeconds }}
       containers:
-        - name: {{ .Values.container.name }}
-          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ .Values.deployment.container.name }}
+          image: {{ .Values.deployment.container.image.name }}:{{ .Values.deployment.container.image.tag }}
+          imagePullPolicy: {{ .Values.deployment.container.image.pullPolicy }}
           resources:
-          {{- if .Values.container.resources }}
-            {{- with .Values.container.resources }}
+          {{- if .Values.deployment.container.resources }}
+            {{- with .Values.deployment.container.resources }}
               {{ toYaml . | nindent 12 }}
             {{- end }}
           {{- else }}
@@ -57,11 +75,11 @@ spec:
                 name: {{ lower $name }}-p4-secret
             - secretRef:
                 name: {{ lower $name }}-mongodb-secret
-            {{- range .Values.container.envFromConfigMaps }}
+            {{- range .Values.deployment.container.envFromConfigMaps }}
             - configMapRef:
                 name: {{ . }}
             {{- end }}
-            {{- range .Values.container.envFromSecrets }}
+            {{- range .Values.deployment.container.envFromSecrets }}
             - secretRef:
                 name: {{ . }}
             {{- end }}
@@ -72,15 +90,21 @@ spec:
             - name: Horde__databasePublicCert
               value: "/app/config/global-bundle.pem"
             {{- end }}
-            {{- range .Values.container.env }}
+            {{- range .Values.deployment.container.env }}
             - {{ .name }}: {{ .value }}
             {{- end }}
+          {{- if .Values.deployment.container.lifecycle }}
+          lifecycle:
+            {{- with .Values.deployment.container.lifecycle }}
+              {{ toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
       initContainers:
         - name: unreal-horde-p4-trust
           image: ubuntu:noble
           command: ["/bin/sh", "-c"]
           args:
-            - |  
+            - |
               apt-get update
               apt-get install -y curl gnupg
               curl -fs https://package.perforce.com/perforce.pubkey | gpg --dearmor -o /usr/share/keyrings/perforce.gpg

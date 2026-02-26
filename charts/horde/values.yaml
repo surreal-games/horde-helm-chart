@@ -1,37 +1,62 @@
 # environment 
 # [Production, Development, and Local]
 environment: Development
-fully_qualified_domain_name: "" 
-  
-# image info
-image: 
-  name: "ghcr.io/epicgames/horde-server"
-  tag: "latest-bundled"
-  pullPolicy: IfNotPresent
+fully_qualified_domain_name: ""
 
-# replica count
-replicaCount: 1
-
-# horde container
-container:
-  name: "unreal-horde-container"
-  resources: { }
-    #  limits:
-    #    cpu: 1
-    #    memory: 4Gi
-    #  requests:
-    #    cpu: 1
-    #    memory: 4Gi
+# horde deployment
+deployment:
+  # replica count
+  replicaCount: 1
   
-  # name: environment variable name
-  # 
-  env: [ ]
-  # - name: environment variable name
-  #   value: environment variable value
-  envFromSecrets: [ ]
-  #  - secretName
-  envFromConfigMaps: [ ]
-  #  - configMapName
+  # strategy 
+  strategy:
+  #    type: RollingUpdate
+  #    rollingUpdate:
+  #      maxSurge: 0
+  #      maxUnavailable: 1
+  
+  metadata:
+    annotations: { }
+    labels: { }
+  
+  # horde container
+  container:
+    name: "unreal-horde-container"
+    
+    # image info
+    image:
+      name: "ghcr.io/epicgames/horde-server"
+      tag: "latest-bundled"
+      pullPolicy: IfNotPresent
+    
+    # Service account, if empty the service account will be created
+    serviceAccount: ""
+    
+    terminationGracePeriodSeconds: 30
+    
+    resources: { }
+      #  limits:
+      #    cpu: 1
+      #    memory: 4Gi
+      #  requests:
+      #    cpu: 1
+    #    memory: 4Gi
+    
+    # name: environment variable name
+    # 
+    env: [ ]
+    # - name: environment variable name
+    #   value: environment variable value
+    envFromSecrets: [ ]
+    #  - secretName
+    envFromConfigMaps: [ ]
+    #  - configMapName
+    
+    # container lifecycle hooks
+    lifecycle: {}
+    #  preStop:
+    #    exec:
+    #      command: ["/bin/sh", "-c", "sleep 10"]
 
 # service settings
 service:
@@ -51,11 +76,8 @@ ingress:
   enabled: false
   className: ""
   annotations: { }
-  labels: { }  
+  labels: { }
   rules: [ ]
-
-# Service account, if empty the service account will be created
-serviceAccount: ""
 
 # auth settings
 auth:
@@ -67,10 +89,10 @@ auth:
   oidcSigninRedirect: ""
   adminClaimType: ""
   adminClaimValue: ""
-  
+
 # Horde configuration json file location
 configPath: ""
-  
+
 # Perforce settings  
 perforce:
   server: ""
